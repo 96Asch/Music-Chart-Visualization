@@ -1,13 +1,7 @@
 // for "Unexpected token ]" search for regex ",\n *]" in json
-const fileTopList   = "/data/hot_stuff_2.csv"
-const fileHierarchy = "/data/unique_hierarchy.json"
-const fileFeatures  = "/data/hot_100_audio_features.csv"
-
-
-
-
-
-
+const fileTopList   = "/data/song_ranking.csv"
+const fileHierarchy = "/data/genres_hierarchy_unique.json"
+const fileFeatures  = "/data/song_features.csv"
 
 Promise.all([
     d3.csv(fileTopList),
@@ -27,18 +21,27 @@ Promise.all([
         }
     }
 
-    // Get the song ids, and at the same time a list of rankings
-    const songIds = new Set();
-    const songs = data[0].filter(function(item) {
-        if (songIds.has(item.songid)) return false;
-        songIds.add(item.songid);
-        return true;
+    // Get the song ids
+    const songIds = new Set(data[0].map(item => item.songid));
+
+    // For the rankings: group them by week
+    // https://stackoverflow.com/a/34890276/7857013
+    const rankingsDict = data[0].reduce(function(result, x) {
+        (result[x.weekid] = result[x.weekid] || []).push(x);
+        return result;
+    }, {});
+    var rankingsList = Object.keys(rankingsDict);
+    rankingsList.sort();
+    console.log(rankingsList);
+    rankingsList = rankingsList.map(key => {
+        const top100 = rankingsDict[key];
+        top100.week = key;
+        return top100;
     });
 
-    // Create a hierarchy genre lookup tree
-
-
+    // todo Create a hierarchy genre lookup tree
     console.log(songFeatures["The Sound Of SilenceDisturbed"]);
+    console.log(rankingsList.slice(0, 5));
 }).catch(function(err) {
     console.log(err);
 })
