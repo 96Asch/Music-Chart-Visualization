@@ -132,7 +132,8 @@
         ]
     },
     {
-        "hip-hop/rnb": [
+        "genre" : "hip-hop/rnb",
+        "subgenre": [
             "conscious hip hop",
             "east coast hip hop",
             "hardcore hip hop",
