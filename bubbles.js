@@ -23,7 +23,7 @@ const colorset = {
 }
 
 // Bubble creation
-d3.json("data/unique_hierarchy.json").then(function(data) {
+d3.json("data/genres_hierarchy.json").then(function(data) {
     var genres = data.map(d => d.genre) // Read main genres into list
     // Create bubble SVG
     var bubble = d3.select("#bubbles")
