@@ -1,19 +1,27 @@
 // for "Unexpected token ]" search for regex ",\n *]" in json
-const fileTopList   = "/data/song_ranking.csv"
+const fileTopList   = "/data/song_ranking_small.csv"
 const fileHierarchy = "/data/genres_hierarchy_unique.json"
-const fileFeatures  = "/data/song_features.csv"
+const fileFeatures  = "/data/unused/song_features.csv"
+
+var last_seg = ["", -1];
+function start(seg_name) {
+    const start_time = performance.now();
+    if (last_seg[1] != -1) {
+        const time = Math.trunc(start_time - last_seg[1]);
+        console.log(`${last_seg[0]} took ${time} ms`);
+    };
+    last_seg = [seg_name, start_time];
+};
 
 
 
-const start_get_data = performance.now();
+start("Getting files");
 Promise.all([
     d3.csv(fileTopList),
     d3.json(fileHierarchy),
     d3.csv(fileFeatures)
 ]).then(function(data) {
-    const start_process_data = performance.now();
-    console.log(`Getting files took ${Math.trunc(
-        start_process_data-start_get_data)} ms`);
+    start("Processing it");
 
     // Get audio features as map of (songId) -> features
     const songFeatures = { }
@@ -24,20 +32,8 @@ Promise.all([
             "genre": about.spotify_genre,
             "artist": about.performer,
             "title": about.song
-        }
-    }
-
-    // let sorted_arr = data[2].slice().sort(); // You can define the comparing function here.
-    // // JS by default uses a crappy string compare.
-    // // (we use slice to clone the array so the
-    // // original array won't be modified)
-    // let results = [];
-    // for (let i = 0; i < sorted_arr.length - 1; i++) {
-    //     if (sorted_arr[i + 1] == sorted_arr[i]) {
-    //       results.push(sorted_arr[i]);
-    //     }
-    // }
-    // return results;
+        };
+    }''
 
     // Get the song ids
     const songIds = new Set(data[0].map(item => item.songid));
@@ -45,8 +41,8 @@ Promise.all([
     // For the rankings: group them by week
     // https://stackoverflow.com/a/34890276/7857013
     const rankingsDict = data[0].reduce(function(result, x) {
-        const y = { "song": songFeatures[x.songid], "week_pos": x.week_position};
-        (result[x.weekid] = result[x.weekid] || []).push(y);
+        // x.song = songFeatures[x.songid];
+        (result[x.weekid] = result[x.weekid] || []).push(x);
         return result;
     }, {});
     var rankingsList = Object.keys(rankingsDict);
@@ -57,9 +53,7 @@ Promise.all([
         return top100;
     });
 
-    const start_show_stuff = performance.now();
-    console.log(`Processing it took ${Math.trunc(
-        start_show_stuff-start_process_data)} ms`);
+    start("Show stuff");
 
     // todo Create a hierarchy genre lookup tree
     console.log(songFeatures["The Sound Of SilenceDisturbed"]);
