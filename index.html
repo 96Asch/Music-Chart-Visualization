@@ -3,14 +3,17 @@
     <meta charset="utf-8">      
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="https://unpkg.com/json5@^2.0.0/dist/index.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
+    <script type="text/javascript" src="webstuff/music.js"></script>
 </head>
 <body>
-    <div id="bubbles">
-        <div id="year">1900</div>
-        <div class="col-sm"><div id="slider">
+    <div id="year">1900</div>
+    <div id="slider"></div>
+    <div id="bubblecontainter">
+        <svg id="bubbles"></svg>
     </div>
     <div id="my_dataviz"></div>
     <!-- <script src="streamgraph.js"></script> -->
-    <script src="bubbles.js"></script>
+    <script type="text/javascript" src="bubbles.js"></script>
 </body>
