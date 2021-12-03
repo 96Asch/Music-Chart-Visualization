@@ -129,8 +129,23 @@ function promise_genre_popularity() {
         promise_genre_lookups(),
         promise_song_rankings_list_with_features()
     ]).then(function([genres, rankings]) {
-        var notfound = {};
-        var songs_without_genre = total_songs = 0;
+
+        // First remove any songs without genres.
+        var total_songs = song_with_any = 0;
+        rankings.forEach(function(weekdata) {
+            const withGenres = weekdata.songs.filter(
+                s => s.features.genres.length > 0);
+            total_songs += weekdata.songs.length;
+            song_with_any += withGenres.length;
+            weekdata.songs = withGenres;
+        });
+        const nogenres = Math.round(((total_songs -
+            song_with_any) / total_songs) * 10000) / 100;
+        console.log(`Discarded ${nogenres}% of songs due to not having a genre.`);
+
+        // Then get the "top" genre of all the songs, and set popularity.
+        var notfoundmap = {};
+        var without_genre = 0;
         rankings.forEach(function(weekdata) {
             const base = genres.reduce((res, go) => {
                 res[go.genre] = 0;
@@ -141,11 +156,11 @@ function promise_genre_popularity() {
                     .map((g) => genres.top_genre_of(g))
                     .filter((v) => {
                         const found = v in base;
-                        if (!found) notfound[v] = (notfound[v] || 0) + 1;
+                        if (!found) notfoundmap[v] = (notfoundmap[v] || 0) + 1;
                         return found;
                     });
                 if (song_genres.length == 0) {
-                    songs_without_genre += 1;
+                    without_genre += 1;
                     continue;
                 }
                 const strength = 10 / (song.week_position * 0.2);
@@ -154,12 +169,10 @@ function promise_genre_popularity() {
                     base[g] += perg;
                 }
             }
-            total_songs += weekdata.songs.length;
             weekdata.popularity = base;
         });
-        const nogenre = Math.round((songs_without_genre / total_songs) * 10000) / 100;
-        console.log(`A total of ${nogenre}% of songs had 0 found genres.`);
-        console.log(notfound);
+        const notFound = Math.round((without_genre / song_with_any) * 10000) / 100;
+        console.log(`Discarded ${notFound}% of songs had 0 found genres.`);
         return rankings;
     });
 }
@@ -170,7 +183,10 @@ var songData = {};
 promise_genre_popularity().then(function(data) {
     start("Show stuff");
 
-    console.log(data.slice(0, 20));
+    for (i = 0; i < data.length; i += 52) {
+        console.log(data[i]);
+    }
+
     songData = data.slice(0, 20);
     // todo Create a hierarchy genre lookup tree
     // console.log(songFeatures["The Sound Of SilenceDisturbed"]);
