@@ -111,7 +111,7 @@ function promise_genre_lookups() {
             if (getName !== undefined) return getName;
             var splitOn = name.indexOf(' ');
             while (splitOn >= 0) {
-                const res1 = data.top_genre_of_base(0, name.substring(splitOn + 1));
+                const res1 = data.top_genre_of_base(name.substring(0, splitOn + 1));
                 if (res1 !== undefined) return res1;
                 const res2 = data.top_genre_of_base(name.substring(splitOn + 1));
                 if (res2 !== undefined) return res2;
@@ -148,7 +148,7 @@ function promise_genre_popularity() {
                     songs_without_genre += 1;
                     continue;
                 }
-                const strength = 100 / song.week_position;
+                const strength = 10 / (song.week_position * 0.2);
                 const perg = strength / song_genres.length;
                 for (g of song_genres) {
                     base[g] += perg;

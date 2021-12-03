@@ -382,7 +382,8 @@
         "Skweee",
         "Nintendocore",
         "Electropop",
-        "Edm"
+        "Edm",
+        "Freestyle"
       ]
     },
     {
@@ -579,6 +580,7 @@
       "genre" : "Pop",
       "subgenre": [
         "Adult contemporary",
+        "Adult standards",
         "Arab pop",
         "Baroque pop",
         "Brill Building",
@@ -622,7 +624,9 @@
         "Traditional pop music",
         "Turkish pop",
         "Vispop",
-        "Wonky pop"
+        "Wonky pop",
+        "Boy band",
+        "Neo mellow"
       ]
     },
     {
@@ -637,7 +641,8 @@
         "Northern soul",
         "Neo soul",
         "Southern soul",
-        "R&B"
+        "R&B",
+        "Quite storm"
       ]
     },
     {
@@ -753,7 +758,8 @@
         "Surf rock",
         "Visual kei",
         "Nagoya kei",
-        "Mellow gold"
+        "Mellow gold",
+        "Rock-and-roll"
       ]
     }
   ]
