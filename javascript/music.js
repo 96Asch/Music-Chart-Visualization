@@ -173,15 +173,15 @@ function promise_genre_popularity() {
         });
         const notFound = Math.round((without_genre / song_with_any) * 10000) / 100;
         console.log(`Discarded ${notFound}% of songs had 0 found genres.`);
-        return rankings;
+        return { "genres": genres, "weeks": rankings };
     });
 }
 
 
-start("Getting data");
+// start("Getting data");
 // promise_genre_popularity().then(function(data) {
 //     start("Show stuff");
-    // for (i = 0; i < data.length; i += 52) {
+    // for (i = 0; i < data["songs"].length; i += 52) {
     //     console.log(data[i]);
     // }
     //
