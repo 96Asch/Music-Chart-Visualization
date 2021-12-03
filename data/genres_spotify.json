@@ -186,7 +186,8 @@
         "Sertanejo",
         "Traditional country music",
         "Truck-driving country",
-        "Western swing"
+        "Western swing",
+        "Country road"
       ]
     },
     {
@@ -379,7 +380,9 @@
         "Bitpop",
         "Game Boy music",
         "Skweee",
-        "Nintendocore"
+        "Nintendocore",
+        "Electropop",
+        "Edm"
       ]
     },
     {
@@ -460,7 +463,10 @@
         "Chicano rap",
         "G-funk",
         "Hyphy",
-        "Jerkin'"
+        "Jerkin'",
+        "Rap",
+        "Mamphis hip hop",
+        "Urban contemporary"
       ]
     },
     {
@@ -630,7 +636,8 @@
         "Blue-eyed soul",
         "Northern soul",
         "Neo soul",
-        "Southern soul"
+        "Southern soul",
+        "R&B"
       ]
     },
     {
@@ -745,7 +752,8 @@
         "Sufi rock",
         "Surf rock",
         "Visual kei",
-        "Nagoya kei"
+        "Nagoya kei",
+        "Mellow gold"
       ]
     }
   ]
