@@ -23,7 +23,9 @@ const colorset = {
 }
 
 // Bubble creation
-d3.json("data/genres_spotify.json").then(function(data) {
+Promise.all([d3.json("data/genres_spotify.json"), promise_genre_popularity()]).then(function(values) {
+    const data = values[0]
+    const songData = values[1]
     var genres = data.map(d => d.genre) // Read main genres into list
     // Create bubble SVG
     var bubble = d3.select("#bubbles")
@@ -37,7 +39,9 @@ d3.json("data/genres_spotify.json").then(function(data) {
         .style("fill" , function(d, i) {
             return colorset[d]
         })
-        .attr("r", 10)
+        .attr("r", function(d) {
+            return 10
+        })
         .attr("cx", function(d, i){return 50 + (i*30)})
         .attr("cy", function(d, i) {
             return 50 + Math.random() * 100
@@ -64,9 +68,6 @@ d3.json("data/genres_spotify.json").then(function(data) {
                 }
             }
         }
-        bubble.selectAll("circles")
-            .append("text")
-            .text("HI")
         function draw(size) {
             document.getElementById("year").innerHTML = size
             bubble.selectAll("circle")
@@ -139,4 +140,6 @@ d3.json("data/genres_spotify.json").then(function(data) {
     );
     
     svg2.append('g').call(slider);
-  })
+  }).catch(function(err) {
+        console.log(err);
+})
