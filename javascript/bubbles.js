@@ -32,7 +32,8 @@ Promise.all([d3.json("data/genres_spotify.json"), promise_genre_popularity()]).t
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 600 500")
     // Initialize all circles
-    bubble.selectAll("circle")
+    var node = bubble.append("g")
+        .selectAll("circle")
         .data(genres)
         .enter().append("circle")
         .style("stroke", "gray")
@@ -40,7 +41,8 @@ Promise.all([d3.json("data/genres_spotify.json"), promise_genre_popularity()]).t
             return colorset[d]
         })
         .attr("r", function(d) {
-            return 10
+            var r = songData[0]["popularity"][d.toLowerCase()]
+            return r
         })
         .attr("cx", function(d, i){return 50 + (i*30)})
         .attr("cy", function(d, i) {
@@ -53,12 +55,12 @@ Promise.all([d3.json("data/genres_spotify.json"), promise_genre_popularity()]).t
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
                 .duration("50")
-                .attr("r", 15)    
+                .attr("r", songData[0]["popularity"][d.toLowerCase()] + 5)    
         })
         .on("mouseout", function(event, d){
             d3.select(this).transition()
                 .duration("50")
-                .attr("r", 10)
+                .attr("r", songData[0]["popularity"][d.toLowerCase()])
         })
 
         function getSubGenres(d) {
@@ -79,20 +81,24 @@ Promise.all([d3.json("data/genres_spotify.json"), promise_genre_popularity()]).t
                     var r = songData[size][d]
                     return 50 + (i*30)
                 })
+                .attr("cx", function(d, i){
+                    var r = songData[size][d]
+                    return 50 + (i*30)
+                })
                 .style("fill-opacity", function(d, i) {
-                    var intensity = songData[size][d] * 0.05
+                    var intensity = songData[size]["popularity"][d.toLowerCase()] * 0.05
                     return intensity
                 })
                 // Animation of the ball
                 .on("mouseover", function(event, d) {
                     d3.select(this).transition()
                         .duration("50")
-                        .attr("r", songData[size][d] + 5)    
+                        .attr("r", songData[size]["popularity"][d.toLowerCase()] + 5)    
                 })
                 .on("mouseout", function(event, d){
                     d3.select(this).transition()
                         .duration("50")
-                        .attr("r", songData[size][d])
+                        .attr("r", songData[size]["popularity"][d.toLowerCase()])
             })
         }
 
@@ -138,7 +144,7 @@ Promise.all([d3.json("data/genres_spotify.json"), promise_genre_popularity()]).t
         .default(9)
         .on('onchange', value => draw(value))
     );
-    
+
     svg2.append('g').call(slider);
   }).catch(function(err) {
         console.log(err);
