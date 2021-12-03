@@ -7,7 +7,7 @@ const port = process.env.PORT || 8080
 function sendFile(req, res) {
     // Look for files in the base path
     var filePath = (req.url == "/") ?
-        (__dirname + "/webstuff/index.html") :
+        (__dirname + "/index.html") :
         (__dirname + req.url);
     // Send the file back (though unsecure with ..)
     console.log("Sending file " + filePath)
