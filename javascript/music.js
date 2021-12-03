@@ -179,18 +179,16 @@ function promise_genre_popularity() {
 
 
 start("Getting data");
-var songData = {};
-promise_genre_popularity().then(function(data) {
-    start("Show stuff");
-
-    for (i = 0; i < data.length; i += 52) {
-        console.log(data[i]);
-    }
-
-    songData = data.slice(0, 20);
+// promise_genre_popularity().then(function(data) {
+//     start("Show stuff");
+    // for (i = 0; i < data.length; i += 52) {
+    //     console.log(data[i]);
+    // }
+    //
+    // songData = data.slice(0, 20);
     // todo Create a hierarchy genre lookup tree
     // console.log(songFeatures["The Sound Of SilenceDisturbed"]);
     // console.log(rankingsList.slice(0, 5));
-}).catch(function(err) {
-    console.log(err);
-})
+// }).catch(function(err) {
+//     console.log(err);
+// })
