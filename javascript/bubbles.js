@@ -55,7 +55,7 @@ function create_svgs() {
     // Create bubble SVG
     var bubble = d3.select("#bubbles")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 600 500");
+        .attr("viewBox", "0 0 600 300");
     // Initialize all circles
     var node = bubble.append("g")
         .selectAll("circle").data(Object.keys(colorset))
