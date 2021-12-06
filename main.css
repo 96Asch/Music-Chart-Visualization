@@ -1,0 +1,38 @@
+
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+#main_div {
+    display: flex;
+}
+
+#area_left {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+#area_right {
+    flex: 1;
+    background-color: #d0d0d0;
+    min-height: 100%;
+}
+
+#area_top_left {
+    background-color: #f0f0f0;
+    flex: 1;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 200px;
+}
+
+#area_bot_left {
+    background-color: #e0e0e0;
+    flex: 1;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 200px;
+}
