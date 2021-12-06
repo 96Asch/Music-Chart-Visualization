@@ -177,6 +177,10 @@ function promise_genre_popularity() {
     });
 }
 
+function promise_duplicate_words() {
+    return d3.json('data/duplicate_words/dup_words.json')
+}
+
 
 // start("Getting data");
 // promise_genre_popularity().then(function(data) {
