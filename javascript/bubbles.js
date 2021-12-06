@@ -19,39 +19,16 @@ const colorset = {
 }
 
 var data = undefined;
-const sliderWidth = 700;
-const sliderCallbacks = [draw];
-const sharedSlider = d3.sliderBottom()
-    .min(0).max(42).step(1)
-    .width(sliderWidth - 100)
-    .displayValue(false)
-    .on('onchange', (val) => {
-        for (const cb of sliderCallbacks) cb(val);
-    });
 
 function set_data(newdata) {
     if (data !== undefined) return;
     data = newdata;
-    sharedSlider.max(data["weeks"].length - 2)
-        .tickFormat((i) => data["weeks"][i].week.substring(0, 4));
-    const ssvg = d3.select('#slider > svg > g');
-    ssvg.selectAll("*").remove();
-    ssvg.call(sharedSlider);
-    sharedSlider.value(Math.floor(data["weeks"].length / 2));
+    console.log("updated data");
 }
 
 function create_svgs() {
     // NOTE this function is called before the data is there.
     // Thus don't use the 'data' variable in this function!
-    // Create a slider SVG
-    d3.select('#slider')
-        .append('svg')
-        .attr('width', sliderWidth)
-        .attr('height', 90)
-        .append('g')
-        .attr('transform', 'translate(42,30)')
-        .attr('id', "somebs")
-        .call(sharedSlider);
     // Create bubble SVG
     var bubble = d3.select("#bubbles")
         .attr("preserveAspectRatio", "xMinYMin meet")
@@ -103,6 +80,7 @@ function draw(week_index) {
 create_svgs();
 promise_genre_popularity().then(function(newdata) {
     set_data(newdata);
+    create_slider(newdata);
 }).catch(function(err) {
     console.log(err);
 })
