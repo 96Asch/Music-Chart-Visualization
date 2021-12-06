@@ -1,11 +1,10 @@
 
-const start_get_data = performance.now();
-
 const margin = {top: 10, right: 30, bottom: 30, left: 40};
 
-var selected_year_i = 50;
 var highest_n = 15;
-var current_year = "";
+var previousYear = "";
+var maxYear = "", minYear = "";
+var lastIndex = 0;
 var duplicate_words_data = undefined;
 // append the svg object to the body of the page
 
@@ -31,15 +30,23 @@ function get_max_value(data, isRounded) {
     return maxVal;
 }
 
-
 // Set the duplicates dataset.
 function set_duplicates_data(newdata) {
     if (duplicate_words_data !== undefined) return;
     duplicate_words_data = newdata;
 }
 
+function set_year_bounds(newdata) {
+    const sortedByYears = d3.sort(newdata, function(a, b) {
+        return d3.ascending(a["year"], b["year"]); 
+    });
 
-window.onresize = () => draw_duplicates_plot(15);
+    maxYear = sortedByYears.at(-1)["year"];
+    minYear = sortedByYears.at(0)["year"];
+}
+
+
+window.onresize = () => draw_duplicates_plot(lastIndex);
 
 function init_duplicates_plot() {
     const svg = d3.select("#duplicates > svg")
@@ -61,12 +68,21 @@ function init_duplicates_plot() {
 
 init_duplicates_plot();
 
-//TODO change to new week_index
 function draw_duplicates_plot(week_index) {
+
+    if (data == undefined) return;
+    if (week_index < 0 || week_index > data["weeks"].length) return;
+    const currentYear = data["weeks"][week_index]["week"].substring(0,4);
+    if (currentYear == previousYear 
+        || currentYear < minYear 
+        || currentYear > maxYear) return;
+
+    previousYear = currentYear;
+    lastIndex = week_index;
 
     const maxValRoundedTen = get_max_value(duplicate_words_data, true);
     const highest_words = d3.sort(duplicate_words_data.filter(function(it) {
-            return it["year"] == (1950 + selected_year_i).toString();
+            return it["year"] == currentYear;
         })[0]["words"], function(a, b) {
             return d3.descending(a["count"], b["count"]);
         }).slice(0, highest_n);
@@ -126,7 +142,8 @@ function draw_duplicates_plot(week_index) {
 
 d3.json('data/duplicate_words/dup_words.json').then(function(newdata) {
     set_duplicates_data(newdata);
-    draw_duplicates_plot(15);
+    set_year_bounds(newdata);
+    draw_duplicates_plot(0);
 }).catch(function(err) {
     console.log(err);
 })
