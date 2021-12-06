@@ -23,9 +23,10 @@ def main(args):
         stop_words = [word.strip() for word in stop_words]
 
     print(stop_words)
-    dump = {}
+    dump = []
 
     for file in tqdm(files):
+        jobjects = []
         with open(file, 'r', encoding='utf-8') as f:
             bb_year = json.load(f)
             unique_lyrics = [parseStringIntoSet(song['lyrics'], stop_words) for song in bb_year]
@@ -44,15 +45,22 @@ def main(args):
                         if word_count[w1] == 0:
                             del word_count[w1]
 
-            occurances = {}
-
             for k, v in word_count.items():
                 if v > args.thresh:
-                    occurances[k] = v
-            
-            occurances = sorted(occurances.items(), key=lambda x:x[1], reverse=True) 
+                    jobjects.append(
+                        {
+                            "word" : k,
+                            "count" : v
+                        }
+                    )
 
-            dump[file.split('/')[-1]] = dict(occurances)
+            
+
+        jsonObjects = {
+            "year" : file.split('/')[-1].split('.')[0], 
+            "words" : jobjects
+            }
+        dump.append(jsonObjects)
 
     with open(args.output, 'w', encoding='utf-8') as out:
         json.dump(dump, out)
