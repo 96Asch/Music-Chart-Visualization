@@ -26,20 +26,21 @@ function update_slider_time() {
     const weekdata = data["weeks"];
     if (weekdata === undefined) return;
 
-    yAxis.max(weekdata.length - 2)
+    sliderAxis.max(weekdata.length - 2)
         .tickFormat((i) => weekdata[i].week.substring(0, 4));
     const ssvg = d3.select('#slider > svg > g');
     ssvg.selectAll("*").remove();
-    ssvg.call(yAxis);
-    yAxis.value(Math.floor(weekdata.length / 2));
+    ssvg.call(sliderAxis);
+    sliderAxis.value(Math.floor(weekdata.length / 2));
 }
 
 function add_slider_callback(cb) {
+    if (sliderCallbacks.includes(cb)) return;
     sliderCallbacks.push(cb);
-    cb(yAxis.value());
+    cb(sliderAxis.value());
 }
 
-const yAxis = d3.sliderBottom()
+const sliderAxis = d3.sliderBottom()
     .min(0).max(42).step(1)
     .width(sliderWidth - 100)
     .displayValue(false)
@@ -51,6 +52,6 @@ const slider = d3.select('#slider > svg')
     .append('g')
     .attr('transform', 'translate(42,30)')
     .attr('id', "somebs")
-    .call(yAxis);
+    .call(sliderAxis);
 
-window.onresize = () => run_slider_callbacks(yAxis.value());
+window.onresize = () => run_slider_callbacks(sliderAxis.value());
