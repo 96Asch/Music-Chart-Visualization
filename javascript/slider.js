@@ -12,20 +12,6 @@ function add_data(key, newdata) {
 const sliderWidth = 700;
 const sliderCallbacks = [];
 
-const yAxis = d3.sliderBottom()
-    .min(0).max(42).step(1)
-    .width(sliderWidth - 100)
-    .displayValue(false)
-    .on('onchange', run_slider_callbacks);
-
-const slider = d3.select('#slider > svg')
-    .attr('width', sliderWidth)
-    .attr('height', 90)
-    .append('g')
-    .attr('transform', 'translate(42,30)')
-    .attr('id', "somebs")
-    .call(yAxis);
-
 function run_slider_callbacks(val) {
     for (const cb of sliderCallbacks) cb(val);
     if (data["weeks"] === undefined) return;
@@ -52,5 +38,19 @@ function add_slider_callback(cb) {
     sliderCallbacks.push(cb);
     cb(yAxis.value());
 }
+
+const yAxis = d3.sliderBottom()
+    .min(0).max(42).step(1)
+    .width(sliderWidth - 100)
+    .displayValue(false)
+    .on('onchange', run_slider_callbacks);
+
+const slider = d3.select('#slider > svg')
+    .attr('width', sliderWidth)
+    .attr('height', 90)
+    .append('g')
+    .attr('transform', 'translate(42,30)')
+    .attr('id', "somebs")
+    .call(yAxis);
 
 window.onresize = () => run_slider_callbacks(yAxis.value());

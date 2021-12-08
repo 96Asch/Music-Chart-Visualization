@@ -18,8 +18,6 @@ const colorset = {
     'Rock': "#9b959a"
 }
 
-const maxHeight = 450 / 2;
-
 function init_bubbles() {
     // NOTE this function is called before the data is there.
     // Thus don't use the 'data' variable in this function!
@@ -29,9 +27,7 @@ function init_bubbles() {
         .enter().append("circle")
         .style("stroke", "gray")
         .style("fill", (d, i) => colorset[d])
-        .attr("r", (genre) => 0)
-        .attr("cx", (d, i) => 50 + (i * 30))
-        .attr("cy", (d, i) => 50 + Math.random() * 100);
+        .attr("r", (genre) => 0);
 }
 
 function draw_bubbles(week_index) {
@@ -39,12 +35,13 @@ function draw_bubbles(week_index) {
     // Resize the plot if needed
     const bubbleDiv = document.getElementById("bubbles_div");
     const totalWidth = Math.floor(bubbleDiv.clientWidth * 0.9 / 50) * 50;
+    const totalHeight = bubbleDiv.clientHeight * 0.95;
     if (totalWidth != d3.select("#bubbles").attr("width")) {
-        const totalHeight = bubbleDiv.clientHeight * 0.95;
         d3.select("#bubbles")
             .attr("width", totalWidth)
             .attr("height", totalHeight);
     }
+    const maxHeight = totalHeight / 2;
 
     // Draw circles
     const about = data["weeks"][week_index];
@@ -52,8 +49,7 @@ function draw_bubbles(week_index) {
     document.getElementById("toptext").innerHTML = (about.week + "  [Top song: "
         + topsong.features.title + " - " + topsong.features.artist + "]");
     // Packing code
-    var pack = d3.pack()
-        .size([700, maxHeight * 2])
+    var pack = d3.pack().size([totalWidth, totalHeight])
     var weekData = transformDataToGroup(about.popularity);
     var values = weekData.map(a => a.value);
     var sumPopularity = values.reduce((a,b) => a + b);
@@ -69,18 +65,18 @@ function draw_bubbles(week_index) {
     var node = d3.select("#bubbles").selectAll("circle")
         .data(nodes)
         .style("fill-opacity", d => d.data.value * 0.05)
-        .attr("r", d => getRadius(d, sumPopularity))
+        .attr("r", d => getRadius(d, sumPopularity, maxHeight))
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
                 .duration("100")
-                .attr("r", d => getRadius(d, sumPopularity) + 5)
+                .attr("r", d => getRadius(d, sumPopularity, maxHeight) + 5)
         })
         .on("mouseout", function(event, d) {
             d3.select(this).transition()
                 .duration("100")
-                .attr("r", d => getRadius(d, sumPopularity))
+                .attr("r", d => getRadius(d, sumPopularity, maxHeight))
         })
         .on("click", (event, genre) => {
             console.log(genre.data.name);
@@ -95,7 +91,7 @@ function draw_bubbles(week_index) {
 }
 
 
-function getRadius(d, sum) {
+function getRadius(d, sum, maxHeight) {
     let entry = d.data
     let radius = entry == null ? 0 : entry.value
     radius = radius > 0 ? maxHeight * (radius / sum) : 0
