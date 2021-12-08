@@ -16,9 +16,7 @@ const yAxis = d3.sliderBottom()
     .min(0).max(42).step(1)
     .width(sliderWidth - 100)
     .displayValue(false)
-    .on('onchange', (val) => {
-        for (const cb of sliderCallbacks) cb(val);
-    });
+    .on('onchange', run_slider_callbacks);
 
 const slider = d3.select('#slider > svg')
     .attr('width', sliderWidth)
@@ -27,6 +25,16 @@ const slider = d3.select('#slider > svg')
     .attr('transform', 'translate(42,30)')
     .attr('id', "somebs")
     .call(yAxis);
+
+function run_slider_callbacks(val) {
+    for (const cb of sliderCallbacks) cb(val);
+    if (data["weeks"] === undefined) return;
+    const about = data["weeks"][val];
+    if (about === undefined) return;
+    const topsong = about.songs[0];
+    document.getElementById("toptext").innerHTML = (about.week + "    [Top song: "
+        + topsong.features.title + " - " + topsong.features.artist + "]");
+}
 
 function update_slider_time() {
     const weekdata = data["weeks"];
@@ -44,3 +52,5 @@ function add_slider_callback(cb) {
     sliderCallbacks.push(cb);
     cb(yAxis.value());
 }
+
+window.onresize = () => run_slider_callbacks(yAxis.value());

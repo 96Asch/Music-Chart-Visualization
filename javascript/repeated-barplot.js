@@ -158,22 +158,20 @@ function draw_duplicates_plot(week_index) {
 
     lines.selectAll("line")
         .transition()
-        .duration(800)
+        .duration(300)
         .attr("x1", function(d) { return xAxis(highest_words[d]["ratio"]); })
         .attr("width", function(d) { return svg_width - xAxis(d["ratio"]); })
-        .delay(function(d, i) { return(i * 100) });
+        .delay(function(d, i) { return(i * 20) });
 
     lines.selectAll("circle")
         .transition()
-        .duration(900)
+        .duration(400)
         .attr('fill-opacity', 1.0)
-        .delay(function(d, i) { return(i * 100) });
+        .delay(function(d, i) { return(i * 20) });
 }
 
 
 init_duplicates_plot();
-
-window.onresize = () => draw_duplicates_plot(lastIndex);
 
 d3.json('data/duplicate_words/dup_words.json').then(function(dupdata) {
     set_year_bounds(dupdata);
@@ -192,5 +190,5 @@ d3.json('data/song_data_bb.json').then(function(data) {
             };
         });
     });
-    console.log(data);
+    // console.log(data);
 });

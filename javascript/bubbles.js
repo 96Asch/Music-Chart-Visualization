@@ -23,12 +23,8 @@ const colorset = {
 function init_bubbles() {
     // NOTE this function is called before the data is there.
     // Thus don't use the 'data' variable in this function!
-    // Create bubble SVG
-    var bubble = d3.select("#bubbles")
-        .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 600 300");
     // Initialize all circles
-    var node = bubble.append("g")
+    var node = d3.select("#bubbles").append("g")
         .selectAll("circle").data(Object.keys(colorset))
         .enter().append("circle")
         .style("stroke", "gray")
@@ -40,10 +36,18 @@ function init_bubbles() {
 
 function draw_bubbles(week_index) {
     if (week_index < 0 || week_index > data["weeks"].length) return;
+    // Resize the plot if needed
+    const bubbleDiv = document.getElementById("bubbles_div");
+    const totalWidth = Math.floor(bubbleDiv.clientWidth * 0.9 / 50) * 50;
+    if (totalWidth != d3.select("#bubbles").attr("width")) {
+        const totalHeight = bubbleDiv.clientHeight * 0.95;
+        d3.select("#bubbles")
+            .attr("width", totalWidth)
+            .attr("height", totalHeight);
+    }
+
+    // Draw circles
     const about = data["weeks"][week_index];
-    const topsong = about.songs[0];
-    document.getElementById("toptext").innerHTML = (about.week + "  [Top song: "
-        + topsong.features.title + " - " + topsong.features.artist + "]");
     d3.select("#bubbles").selectAll("circle")
         .attr("r", (d, i) => about["popularity"][d.toLowerCase()])
         .style("fill-opacity", function(d, i) {

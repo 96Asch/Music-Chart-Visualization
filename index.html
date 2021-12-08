@@ -21,15 +21,17 @@
                 <div id="slider"><svg class="margin-v-center"></svg></div>
                 <p class="margin-v-center" id="toptext"></p>
             </div>
-            <div class="flex-big showbox">
-                <img class="data-source" src="data/source_icons/source_spotify_charts.png"></img>
-                <svg class="fullsize" id="bubbles"></svg>
+            <div class="flex-big showbox" id="bubbles_div">
+                <div class="data-source"><img alt="https://spotifycharts.com/home/"
+                    src="data/source_icons/source_spotify_charts.png"/></div>
+                <svg id="bubbles"></svg>
             </div>
             <div class="flex-small showbox">
                 <button id="repeat_switch" type="button" onclick="switchRepeats()">
                     Switch to repeats per song
                 </button>
-                <img class="data-source" src="data/source_icons/source_billboards.png"></img>
+                <div class="data-source"><img alt="https://www.billboard.com/"
+                    src="data/source_icons/source_billboards.png"/></div>
                 <div id="duplicates" class="fullsize">
                     <svg></svg>
                 </div>

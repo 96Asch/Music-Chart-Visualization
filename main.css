@@ -78,17 +78,22 @@ g > text {
 /* Data source positioning */
 
 .data-source {
-    width: 64px;
-    height: 64px;
     position: absolute;
     right: 20px;
     bottom: 20px;
 }
 
+.data-source > img {
+    width: 64px;
+    height: 64px;
+}
+
 .data-source:before {
     position: absolute;
-    top: -30px;
+    display: block;
+    top: -14px;
     left: 0;
-    height: 100%;
+    color: white;
+    font-size: 12px;
     content: "Data source:";
 }
