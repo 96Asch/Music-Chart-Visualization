@@ -18,7 +18,7 @@ const colorset = {
     'Rock': "#9b959a"
 }
 
-
+const maxHeight = 450 / 2;
 
 function init_bubbles() {
     // NOTE this function is called before the data is there.
@@ -26,7 +26,7 @@ function init_bubbles() {
     // Create bubble SVG
     var bubble = d3.select("#bubbles")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 600 300")
+        .attr("viewBox", "0 0 700 450")
         .attr("overflow", "hidden");
     // Initialize all circles
     var node = bubble.append("g")
@@ -48,8 +48,7 @@ function draw_bubbles(week_index) {
         + topsong.features.title + " - " + topsong.features.artist + "]");
     // Packing code
     var pack = d3.pack()
-        .size([700, 500 - 50])
-        .padding(10);    
+        .size([700, maxHeight * 2]) 
     var weekData = transformDataToGroup(about.popularity);
     var values = weekData.map(a => a.value);
     var sumPopularity = values.reduce((a,b) => a + b);
@@ -61,19 +60,13 @@ function draw_bubbles(week_index) {
     root = d3.hierarchy(root)
         .sum(d => d.value)
         .sort((a,b) => b.value - a.value)
-    var nodes = pack(root).descendants()
+    var nodes = pack(root)
     var node = d3.select("#bubbles").selectAll("circle")
         .data(nodes)
-        // .attr("r", d => d.value
         .style("fill-opacity", d => d.data.value * 0.05)
-        .style("fill", d => colorset[d.data.name.charAt(0).toUpperCase() + d.data.name.slice(1)])
         .attr("r", d => getRadius(d, sumPopularity))
-        .attr("cx", (d, i) => 400 * d.x / sumPopularity - 300)
-        .attr("cy", (d, i) => 400 * d.y / sumPopularity)
-        // .attr("r", (d, i) => about["popularity"][d.toLowerCase()])
-        // .style("fill-opacity", function(d, i) {
-        //     return about["popularity"][d.toLowerCase()] * 0.05
-        // })
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
                 .duration("100")
@@ -100,7 +93,7 @@ function draw_bubbles(week_index) {
 function getRadius(d, sum) {
     let entry = d.data
     let radius = entry == null ? 0 : entry.value
-    radius = radius > 0 ? 400 * (radius / sum) : 0
+    radius = radius > 0 ? maxHeight * (radius / sum) : 0
     return radius;
 }
 
@@ -116,7 +109,6 @@ function transformDataToGroup(data) {
     return result;
 }
 
-create_svgs();
 init_bubbles();
 promise_genre_popularity().then(function(newdata) {
     add_data("genres", newdata["genres"]);
