@@ -1,10 +1,18 @@
+var data = { };
+
+function add_data(key, newdata) {
+    if (data[key] !== undefined) return;
+    console.log("Updating " + key + " data");
+    data[key] = newdata;
+    if (key === "weeks") update_slider_time();
+}
+
+/////////////////// Creating the slider
+
 const sliderWidth = 700;
-const sliderCallbacks = [draw, draw_duplicates_plot];
+const sliderCallbacks = [];
 
-
-function create_slider(data) {
-
-    const yAxis = d3.sliderBottom()
+const yAxis = d3.sliderBottom()
     .min(0).max(42).step(1)
     .width(sliderWidth - 100)
     .displayValue(false)
@@ -12,7 +20,7 @@ function create_slider(data) {
         for (const cb of sliderCallbacks) cb(val);
     });
 
-    const slider = d3.select('#slider')
+const slider = d3.select('#slider')
     .append('svg')
     .attr('width', sliderWidth)
     .attr('height', 90)
@@ -21,16 +29,19 @@ function create_slider(data) {
     .attr('id', "somebs")
     .call(yAxis);
 
-    if (data !== undefined) {
-        console.log(data["weeks"].length)
-        yAxis.max(data["weeks"].length - 2)
-            .tickFormat((i) => data["weeks"][i].week.substring(0, 4));
-            
-        const ssvg = d3.select('#slider > svg > g');
-        ssvg.selectAll("*").remove();
-        ssvg.call(yAxis);
-        yAxis.value(Math.floor(data["weeks"].length / 2));
-    }
+function update_slider_time() {
+    const weekdata = data["weeks"];
+    if (weekdata === undefined) return;
 
-    return slider
+    yAxis.max(weekdata.length - 2)
+        .tickFormat((i) => weekdata[i].week.substring(0, 4));
+    const ssvg = d3.select('#slider > svg > g');
+    ssvg.selectAll("*").remove();
+    ssvg.call(yAxis);
+    yAxis.value(Math.floor(weekdata.length / 2));
+}
+
+function add_slider_callback(cb) {
+    sliderCallbacks.push(cb);
+    cb(yAxis.value());
 }

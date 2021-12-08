@@ -6,14 +6,25 @@ const margin = {top: 10, right: 30, bottom: 30, left: 40};
 var selected_year_i = 50;
 var highest_n = 15;
 var current_year = "";
-var duplicate_words_data = undefined;
-// append the svg object to the body of the page
 
+function switchRepeats() {
+    const switchb = document.getElementById("repeat_switch");
+    const options = ["Switch to repeats per song", "Switch to yearly repeats"];
+    const innerNow = switchb.innerHTML.trim();
+    if (innerNow == options[0]) {
+        switchb.innerHTML = options[1];
+
+    } else if (innerNow == options[1]){
+        switchb.innerHTML = options[0];
+
+    } else {
+        console.log("Unknown switch option: " + innerNow);
+    }
+}
 
 // Get the (rounded) max number of words in the dataset.
 function get_max_value(data, isRounded) {
     const max_dup_counts = []
-
     data.forEach(function(year_object, index){
         const counts = [0];
         year_object["words"].forEach(function(obj) {
@@ -21,25 +32,12 @@ function get_max_value(data, isRounded) {
         }, counts)
         this.push(d3.max(counts));
     }, max_dup_counts)
-
     var maxVal = d3.max(max_dup_counts);
-
     if (isRounded) {
         maxVal = Math.ceil(maxVal / 10) * 10;
     }
-
     return maxVal;
 }
-
-
-// Set the duplicates dataset.
-function set_duplicates_data(newdata) {
-    if (duplicate_words_data !== undefined) return;
-    duplicate_words_data = newdata;
-}
-
-
-window.onresize = () => draw_duplicates_plot(15);
 
 function init_duplicates_plot() {
     const svg = d3.select("#duplicates > svg")
@@ -59,10 +57,11 @@ function init_duplicates_plot() {
         .append("circle");
 }
 
-init_duplicates_plot();
-
 //TODO change to new week_index
 function draw_duplicates_plot(week_index) {
+    const duplicate_words_data = data["duplicates"];
+    if (duplicate_words_data === undefined) return;
+    console.log("Drawing");
 
     const maxValRoundedTen = get_max_value(duplicate_words_data, true);
     const highest_words = d3.sort(duplicate_words_data.filter(function(it) {
@@ -124,9 +123,24 @@ function draw_duplicates_plot(week_index) {
         .attr("stroke", "black");
 }
 
+
+init_duplicates_plot();
+window.onresize = () => draw_duplicates_plot(15);
+
 d3.json('data/duplicate_words/dup_words.json').then(function(newdata) {
-    set_duplicates_data(newdata);
-    draw_duplicates_plot(15);
-}).catch(function(err) {
-    console.log(err);
-})
+    add_data("duplicates", newdata);
+    add_slider_callback(draw_duplicates_plot);
+});
+
+d3.json('data/song_data_bb.json').then(function(data) {
+    data.forEach(yeardata => {
+        yeardata.songs = yeardata.songs.map(song => {
+            return {
+                "title": song.title,
+                "artist": song.artist,
+                "repeat": song.num_lines / song.num_dupes
+            };
+        });
+    });
+    console.log(data);
+});

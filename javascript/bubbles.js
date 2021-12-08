@@ -18,15 +18,9 @@ const colorset = {
     'Rock': "#9b959a"
 }
 
-var data = undefined;
 
-function set_data(newdata) {
-    if (data !== undefined) return;
-    data = newdata;
-    console.log("updated data");
-}
 
-function create_svgs() {
+function init_bubbles() {
     // NOTE this function is called before the data is there.
     // Thus don't use the 'data' variable in this function!
     // Create bubble SVG
@@ -44,7 +38,7 @@ function create_svgs() {
         .attr("cy", (d, i) => 50 + Math.random() * 100);
 }
 
-function draw(week_index) {
+function draw_bubbles(week_index) {
     if (week_index < 0 || week_index > data["weeks"].length) return;
     const about = data["weeks"][week_index];
     const topsong = about.songs[0];
@@ -77,10 +71,11 @@ function draw(week_index) {
 }
 
 
-create_svgs();
+init_bubbles();
 promise_genre_popularity().then(function(newdata) {
-    set_data(newdata);
-    create_slider(newdata);
+    add_data("genres", newdata["genres"]);
+    add_data("weeks", newdata["weeks"]);
+    add_slider_callback(draw_bubbles);
 }).catch(function(err) {
     console.log(err);
 })
