@@ -1,50 +1,94 @@
 
-html, body {
+/* Layout using flex and some sizes */
+
+html, body, #main_div {
     margin: 0;
     height: 100%;
 }
 
-#main_div {
+.with-flex-rows {
     display: flex;
-    height: 100%;
+    flex-direction: row;
 }
 
-#area_left {
-    flex: 2;
+.with-flex-cols {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-    height: 100%;
 }
 
-#area_right {
+.flex-small {
     flex: 1;
-    background-color: #d0d0d0;
-    min-height: 100%;
 }
 
-#area_top_left {
-    background-color: #f0f0f0;
+.flex-big {
     flex: 2;
 }
 
-#area_bot_left {
-    background-color: #e0e0e0;
-    flex: 1;
-    position: relative;
+.flex-fit {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
 }
 
-#bubbles {
+.fullsize {
     height: 100%;
     width: 100%;
 }
 
-#repeat_switch {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+.margin-v-center {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
 }
 
-#duplicates {
+/* Coloring of the backround, show boxes, texts etc */
+
+#main_div {
+    background-color: #282a36;
+}
+
+.showbox {
+    margin: 10px;
+    position: relative;
+    background-color: #44475a;
+}
+
+h1, h2, h3, p {
+    color: white;
+    margin: 5px;
+}
+
+g > text {
+    stroke: none;
+}
+
+/* The repeat switch positioning */
+
+#area_bot_left {
+    position: relative;
+}
+
+#repeat_switch {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+/* Data source positioning */
+
+.data-source {
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.data-source:before {
+    position: absolute;
+    top: -30px;
+    left: 0;
     height: 100%;
+    content: "Data source:";
 }

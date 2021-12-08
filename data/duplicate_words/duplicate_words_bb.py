@@ -50,7 +50,7 @@ def main(args):
                     jobjects.append(
                         {
                             "word" : k,
-                            "count" : v
+                            "ratio" : (v / len(bb_year))
                         }
                     )
 

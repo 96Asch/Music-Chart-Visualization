@@ -1,7 +1,9 @@
 
 const margin = {top: 10, right: 30, bottom: 30, left: 40};
+const dup_colors = new Map();
 
 var highest_n = 15;
+var highest_words = [];
 var current_year = "";
 var previousYear = "";
 var maxYear = "", minYear = "";
@@ -22,23 +24,6 @@ function switchRepeats() {
     }
 }
 
-// Get the (rounded) max number of words in the dataset.
-function get_max_value(data, isRounded) {
-    const max_dup_counts = []
-    data.forEach(function(year_object, index){
-        const counts = [0];
-        year_object["words"].forEach(function(obj) {
-            this.push(obj["count"]);
-        }, counts)
-        this.push(d3.max(counts));
-    }, max_dup_counts)
-    var maxVal = d3.max(max_dup_counts);
-    if (isRounded) {
-        maxVal = Math.ceil(maxVal / 10) * 10;
-    }
-    return maxVal;
-}
-
 function set_year_bounds(dupdata) {
     const sortedByYears = d3.sort(dupdata, function(a, b) {
         return d3.ascending(a["year"], b["year"]);
@@ -49,21 +34,44 @@ function set_year_bounds(dupdata) {
 }
 
 function init_duplicates_plot() {
-    const svg = d3.select("#duplicates > svg")
+    const svg = d3.select("#duplicates > svg");
     const gmain = svg.append("g").attr("id", "dd_main");
     const lines = gmain.append("g").attr("id", "dd_lines");
     gmain.append("g").attr("id", "dd_axis_bottom");
     gmain.append("g").attr("id", "dd_axis_left");
+    gmain.attr("stroke", "white").attr("color", "white");
 
     const index_data = [...Array(highest_n).keys()];
     lines.selectAll("line")
         .data(index_data)
-        .enter()
-        .append("line");
+        .join(
+            function(enter) {
+                return enter.append("line");
+            }
+        )
+
+
     lines.selectAll("circle")
         .data(index_data)
-        .enter()
-        .append("circle");
+        .join(
+            function(enter) {
+                return enter.append("circle");
+            }
+        )
+}
+
+function random_color() {
+    return "#" + Math.floor( Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase();
+}
+
+function init_color_map(data) {
+    data.forEach(yearData => {
+        yearData["words"].forEach(word => {
+            if (!dup_colors.has(word["word"])) {
+                dup_colors.set(word["word"], random_color());
+            }
+        })
+    })
 }
 
 function draw_duplicates_plot(week_index) {
@@ -73,25 +81,15 @@ function draw_duplicates_plot(week_index) {
 
     if (week_index < 0 || week_index > weeks_data.length) return;
     const currentYear = weeks_data[week_index]["week"].substring(0,4);
-    if (currentYear == previousYear
-        || currentYear < minYear
-        || currentYear > maxYear) return;
-
-    previousYear = currentYear;
-    lastIndex = week_index;
-
-    const maxValRoundedTen = get_max_value(duplicate_words_data, true);
-    const highest_words = d3.sort(duplicate_words_data.filter(function(it) {
-            return it["year"] == currentYear;
-        })[0]["words"], function(a, b) {
-            return d3.descending(a["count"], b["count"]);
-        }).slice(0, highest_n);
+    if (currentYear < minYear || currentYear > maxYear) return;
 
     ////////  Sizing /////////////
 
     const dupesDiv = document.getElementById("duplicates");
-    const totalWidth = dupesDiv.clientWidth;
-    // *0.95 prevents growing due to missize between svg and div
+    const totalWidth = Math.floor(dupesDiv.clientWidth * 0.9 / 50) * 50;
+    if (totalWidth == d3.select("#duplicates > svg").attr("width") &&
+        currentYear == previousYear) return;
+    // little less heigh to prevent growing due to missize between svg and div
     const totalHeight = dupesDiv.clientHeight * 0.95;
     svg_width = totalWidth - margin.left - margin.right,
     svg_height = totalHeight - margin.top - margin.bottom;
@@ -102,10 +100,27 @@ function draw_duplicates_plot(week_index) {
         .select("#dd_main")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    ////////  Data stuff /////////////
+
+    previousYear = currentYear;
+    lastIndex = week_index;
+
+
+    highest_words = d3.sort(duplicate_words_data.filter(function(it) {
+            return it["year"] == currentYear;
+        })[0]["words"], function(a, b) {
+            return d3.descending(a["ratio"], b["ratio"]);
+        });
+
+    const numShow = Math.min(highest_words.length, highest_n);
+
+    highest_words = highest_words.slice(0, numShow);
+
+
     ////////  Axes /////////////
 
     const xAxis = d3.scaleLinear()
-        .domain([0, maxValRoundedTen])
+        .domain([0.0, 1.0])
         .range([ 0, svg_width]);
 
     const yAxis = d3.scaleBand()
@@ -127,25 +142,42 @@ function draw_duplicates_plot(week_index) {
     const lines = gmain.select("#dd_lines");
 
     lines.selectAll("line")
-        .attr("x1", function(d) { return xAxis(highest_words[d]["count"]); })
+        .attr("x1", function(d) { return xAxis(0); })
         .attr("x2", xAxis(0))
         .attr("y1", function(d) { return yAxis(highest_words[d]["word"]); })
         .attr("y2", function(d) { return yAxis(highest_words[d]["word"]); })
-        .attr("stroke", "black");
+        .style("stroke", function (d, i) { return dup_colors.get(highest_words[d]["word"]); });
 
     lines.selectAll("circle")
-        .attr("cx", function(d) { return xAxis(highest_words[d]["count"]); })
+        .attr("cx", function(d) { return xAxis(highest_words[d]["ratio"]); })
         .attr("cy", function(d) { return yAxis(highest_words[d]["word"]); })
-        .attr("r", "2")
-        .attr("stroke", "black");
+        .attr("r", "3")
+        .attr("fill-opacity", 0.0)
+        .attr("stroke-opacity", 0.0)
+        .attr("fill", function (d, i) { return dup_colors.get(highest_words[d]["word"]); });
+
+    lines.selectAll("line")
+        .transition()
+        .duration(800)
+        .attr("x1", function(d) { return xAxis(highest_words[d]["ratio"]); })
+        .attr("width", function(d) { return svg_width - xAxis(d["ratio"]); })
+        .delay(function(d, i) { return(i * 100) });
+
+    lines.selectAll("circle")
+        .transition()
+        .duration(900)
+        .attr('fill-opacity', 1.0)
+        .delay(function(d, i) { return(i * 100) });
 }
 
 
 init_duplicates_plot();
+
 window.onresize = () => draw_duplicates_plot(lastIndex);
 
 d3.json('data/duplicate_words/dup_words.json').then(function(dupdata) {
     set_year_bounds(dupdata);
+    init_color_map(dupdata);
     add_data("duplicates", dupdata);
     add_slider_callback(draw_duplicates_plot);
 });

@@ -10,29 +10,35 @@
 
 </head>
 <body>
-    <div id="main_div">
-        <div id="area_left">
-            <div id="area_top_left">
-                <div id="slider"></div>
-                <div id="toptext"></div>
-                <div id="bubblecontainter">
-                    <svg id="bubbles"></svg>
-                </div>
-                <div id="my_dataviz"></div>
+    <div class="with-flex-rows" id="main_div">
+        <div class="flex-big with-flex-cols" id="area_left">
+            <div class="flex-fit">
+                <h1 class="margin-v-center">
+                    Song data over time!
+                </h1>
             </div>
-            <div id="area_bot_left">
-                <div id="duplicates">
-                    <svg>
-
-                    </svg>
-                </div>
+            <div class="flex-fit showbox">
+                <div id="slider"><svg class="margin-v-center"></svg></div>
+                <p class="margin-v-center" id="toptext"></p>
+            </div>
+            <div class="flex-big showbox">
+                <img class="data-source" src="data/source_icons/source_spotify_charts.png"></img>
+                <svg class="fullsize" id="bubbles"></svg>
+            </div>
+            <div class="flex-small showbox">
                 <button id="repeat_switch" type="button" onclick="switchRepeats()">
                     Switch to repeats per song
                 </button>
+                <img class="data-source" src="data/source_icons/source_billboards.png"></img>
+                <div id="duplicates" class="fullsize">
+                    <svg></svg>
+                </div>
             </div>
         </div>
-        <div id="area_right">
-            The right area
+        <div class="flex-small with-flex-cols" id="area_right">
+            <div class="showbox flex-small">
+                The right area
+            </div>
         </div>
     </div>
     <!-- <script src="streamgraph.js"></script> -->

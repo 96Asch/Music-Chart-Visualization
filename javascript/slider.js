@@ -20,8 +20,7 @@ const yAxis = d3.sliderBottom()
         for (const cb of sliderCallbacks) cb(val);
     });
 
-const slider = d3.select('#slider')
-    .append('svg')
+const slider = d3.select('#slider > svg')
     .attr('width', sliderWidth)
     .attr('height', 90)
     .append('g')
