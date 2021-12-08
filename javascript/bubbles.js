@@ -8,7 +8,7 @@ const colorset = {
     'Caribbean and Caribbean-influenced': "#ce614d",
     'Country': "#998b6b",
     'Easy listening': "#66e5b3",
-    'Electronic': "#e8ef16",
+    'Electronic': "#a8ff16",
     'Folk': "#fdd222",
     'Hip hop': "#f49942",
     'Jazz': "#f1d252",
@@ -55,10 +55,12 @@ function create_svgs() {
     // Create bubble SVG
     var bubble = d3.select("#bubbles")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 600 500");
+        .attr("viewBox", "0 0 600 500")
+        .attr("overflow", "hidden");
     // Initialize all circles
     var node = bubble.append("g")
-        .selectAll("circle").data(Object.keys(colorset))
+        .selectAll("circle")
+        .data(Object.keys(colorset))
         .enter().append("circle")
         .style("stroke", "gray")
         .style("fill", (d, i) => colorset[d])
@@ -73,23 +75,46 @@ function draw(week_index) {
     const topsong = about.songs[0];
     document.getElementById("toptext").innerHTML = (about.week + "  [Top song: "
         + topsong.features.title + " - " + topsong.features.artist + "]");
-    d3.select("#bubbles").selectAll("circle")
-        .attr("r", (d, i) => about["popularity"][d.toLowerCase()])
-        .style("fill-opacity", function(d, i) {
-            return about["popularity"][d.toLowerCase()] * 0.05
-        })
+    // Packing code
+    var pack = d3.pack()
+        .size([700, 500 - 50])
+        .padding(10);    
+    var weekData = transformDataToGroup(about.popularity);
+    var values = weekData.map(a => a.value);
+    var sumPopularity = values.reduce((a,b) => a + b);
+
+    var root = {
+        "name" : "root",
+        "children" : weekData
+    }
+    root = d3.hierarchy(root)
+        .sum(d => d.value)
+        .sort((a,b) => b.value - a.value)
+    var nodes = pack(root).descendants()
+    var node = d3.select("#bubbles").selectAll("circle")
+        .data(nodes)
+        // .attr("r", d => d.value
+        .style("fill-opacity", d => d.data.value * 0.05)
+        .style("fill", d => colorset[d.data.name.charAt(0).toUpperCase() + d.data.name.slice(1)])
+        .attr("r", d => getRadius(d, sumPopularity))
+        .attr("cx", (d, i) => 400 * d.x / sumPopularity - 300)
+        .attr("cy", (d, i) => 400 * d.y / sumPopularity)
+        // .attr("r", (d, i) => about["popularity"][d.toLowerCase()])
+        // .style("fill-opacity", function(d, i) {
+        //     return about["popularity"][d.toLowerCase()] * 0.05
+        // })
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
                 .duration("100")
-                .attr("r", about["popularity"][d.toLowerCase()] + 5)
+                .attr("r", d => getRadius(d, sumPopularity) + 5)
         })
         .on("mouseout", function(event, d) {
             d3.select(this).transition()
                 .duration("100")
-                .attr("r", about["popularity"][d.toLowerCase()])
+                .attr("r", d => getRadius(d, sumPopularity))
         })
         .on("click", (event, genre) => {
-            console.log("Clicked " + genre);
+            console.log(genre.data.name);
             // const genres = data["genres"];
             // for (var j = 0; j < genres.length; j++) {
             //     if (genres[j]["genre"] == genre.toLowerCase()) {
@@ -97,9 +122,28 @@ function draw(week_index) {
             //     }
             // }
         });
+
 }
 
 
+function getRadius(d, sum) {
+    let entry = d.data
+    let radius = entry == null ? 0 : entry.value
+    radius = radius > 0 ? 400 * (radius / sum) : 0
+    return radius;
+}
+
+function transformDataToGroup(data) {
+    let result = [];
+    for (var key in data) {
+        let entry = {
+            "name" : key,
+            "value" : data[key],
+        }
+        result.push(entry);
+    }
+    return result;
+}
 create_svgs();
 promise_genre_popularity().then(function(newdata) {
     set_data(newdata);
