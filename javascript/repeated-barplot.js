@@ -49,11 +49,12 @@ function set_year_bounds(dupdata) {
 }
 
 function init_duplicates_plot() {
-    const svg = d3.select("#duplicates > svg")
+    const svg = d3.select("#duplicates > svg");
     const gmain = svg.append("g").attr("id", "dd_main");
     const lines = gmain.append("g").attr("id", "dd_lines");
     gmain.append("g").attr("id", "dd_axis_bottom");
     gmain.append("g").attr("id", "dd_axis_left");
+    gmain.attr("stroke", "white").attr("color", "white");
 
     const index_data = [...Array(highest_n).keys()];
     lines.selectAll("line")
@@ -73,9 +74,26 @@ function draw_duplicates_plot(week_index) {
 
     if (week_index < 0 || week_index > weeks_data.length) return;
     const currentYear = weeks_data[week_index]["week"].substring(0,4);
-    if (currentYear == previousYear
-        || currentYear < minYear
-        || currentYear > maxYear) return;
+    if (currentYear < minYear || currentYear > maxYear) return;
+
+    ////////  Sizing /////////////
+
+    const dupesDiv = document.getElementById("duplicates");
+    const totalWidth = Math.floor(dupesDiv.clientWidth * 0.9 / 50) * 50;
+    if (totalWidth == d3.select("#duplicates > svg").attr("width") &&
+        currentYear == previousYear) return;
+    // little less heigh to prevent growing due to missize between svg and div
+    const totalHeight = dupesDiv.clientHeight * 0.95;
+    svg_width = totalWidth - margin.left - margin.right,
+    svg_height = totalHeight - margin.top - margin.bottom;
+
+    const gmain = d3.select("#duplicates > svg")
+        .attr("width", totalWidth)
+        .attr("height", totalHeight)
+        .select("#dd_main")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    ////////  Data stuff /////////////
 
     previousYear = currentYear;
     lastIndex = week_index;
@@ -86,21 +104,6 @@ function draw_duplicates_plot(week_index) {
         })[0]["words"], function(a, b) {
             return d3.descending(a["count"], b["count"]);
         }).slice(0, highest_n);
-
-    ////////  Sizing /////////////
-
-    const dupesDiv = document.getElementById("duplicates");
-    const totalWidth = dupesDiv.clientWidth;
-    // *0.95 prevents growing due to missize between svg and div
-    const totalHeight = dupesDiv.clientHeight * 0.95;
-    svg_width = totalWidth - margin.left - margin.right,
-    svg_height = totalHeight - margin.top - margin.bottom;
-
-    const gmain = d3.select("#duplicates > svg")
-        .attr("width", totalWidth)
-        .attr("height", totalHeight)
-        .select("#dd_main")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     ////////  Axes /////////////
 
@@ -131,17 +134,18 @@ function draw_duplicates_plot(week_index) {
         .attr("x2", xAxis(0))
         .attr("y1", function(d) { return yAxis(highest_words[d]["word"]); })
         .attr("y2", function(d) { return yAxis(highest_words[d]["word"]); })
-        .attr("stroke", "black");
+        .attr("stroke", "white");
 
     lines.selectAll("circle")
         .attr("cx", function(d) { return xAxis(highest_words[d]["count"]); })
         .attr("cy", function(d) { return yAxis(highest_words[d]["word"]); })
         .attr("r", "2")
-        .attr("stroke", "black");
+        .attr("stroke", "white");
 }
 
 
 init_duplicates_plot();
+
 window.onresize = () => draw_duplicates_plot(lastIndex);
 
 d3.json('data/duplicate_words/dup_words.json').then(function(dupdata) {
