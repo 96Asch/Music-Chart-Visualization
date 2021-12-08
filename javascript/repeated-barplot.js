@@ -6,7 +6,6 @@ var current_year = "";
 var previousYear = "";
 var maxYear = "", minYear = "";
 var lastIndex = 0;
-// append the svg object to the body of the page
 
 function switchRepeats() {
     const switchb = document.getElementById("repeat_switch");
@@ -40,15 +39,14 @@ function get_max_value(data, isRounded) {
     return maxVal;
 }
 
-function set_year_bounds(newdata) {
-    const sortedByYears = d3.sort(newdata, function(a, b) {
+function set_year_bounds(dupdata) {
+    const sortedByYears = d3.sort(dupdata, function(a, b) {
         return d3.ascending(a["year"], b["year"]);
     });
 
     maxYear = sortedByYears.at(-1)["year"];
     minYear = sortedByYears.at(0)["year"];
 }
-
 
 function init_duplicates_plot() {
     const svg = d3.select("#duplicates > svg")
@@ -69,13 +67,12 @@ function init_duplicates_plot() {
 }
 
 function draw_duplicates_plot(week_index) {
+    const weeks_data = data["weeks"];
     const duplicate_words_data = data["duplicates"];
-    if (duplicate_words_data === undefined) return;
-    console.log("Drawing");
+    if (duplicate_words_data === undefined || weeks_data === undefined) return;
 
-    if (data == undefined) return;
-    if (week_index < 0 || week_index > data["weeks"].length) return;
-    const currentYear = data["weeks"][week_index]["week"].substring(0,4);
+    if (week_index < 0 || week_index > weeks_data.length) return;
+    const currentYear = weeks_data[week_index]["week"].substring(0,4);
     if (currentYear == previousYear
         || currentYear < minYear
         || currentYear > maxYear) return;
@@ -147,9 +144,9 @@ function draw_duplicates_plot(week_index) {
 init_duplicates_plot();
 window.onresize = () => draw_duplicates_plot(lastIndex);
 
-d3.json('data/duplicate_words/dup_words.json').then(function(newdata) {
-    set_year_bounds(newdata);
-    add_data("duplicates", newdata);
+d3.json('data/duplicate_words/dup_words.json').then(function(dupdata) {
+    set_year_bounds(dupdata);
+    add_data("duplicates", dupdata);
     add_slider_callback(draw_duplicates_plot);
 });
 
