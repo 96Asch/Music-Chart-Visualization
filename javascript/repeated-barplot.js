@@ -8,7 +8,13 @@ var current_year = "";
 var previousYear = "";
 var maxYear = "", minYear = "";
 
-const switchOptions = ["Switch to repeats per song", "Switch to yearly repeats"];
+const switchOptions = ["Switch to repeats per song", "Switch to yearly words"];
+const optionDescriptions = [
+    `Repetition per song. Each horizontal bar shows a set of songs with a line
+    repetition as given on the Y-axis. On the X-axis we see the size of this set.`,
+    `Yearly words. Each word is counted in the top songs thoughout the year.
+    The X-axis shows a word count divided by the amount of songs.`
+];
 function switchRepeats() {
     const switchb = document.getElementById("repeat_switch");
     const innerNow = switchb.innerHTML.trim();
@@ -97,10 +103,18 @@ function draw_one_of_the_plots(week_index, force=false) {
     // Finally we draw the right plot of course
     const switchb = document.getElementById("repeat_switch");
     const innerNow = switchb.innerHTML.trim();
+    const description = document.getElementById("repeat_description");
+    const insertYear = (txt) => {
+        const at = txt.indexOf(".");
+        return txt.slice(0, at) + " [" + currentYear + "]" + txt.slice(at);
+    }
+
     if (innerNow == switchOptions[1]) { // Show repeats per song
+        description.innerHTML = insertYear(optionDescriptions[0]);
         draw_song_repeats_plot(currentYear, svg_width, svg_height);
         previousYear = currentYear;
     } else if (innerNow == switchOptions[0]){ // Yearly duplicates
+        description.innerHTML = insertYear(optionDescriptions[1]);
         draw_duplicates_plot(currentYear, svg_width, svg_height);
         previousYear = currentYear;
     }
@@ -151,6 +165,7 @@ function draw_duplicates_plot(currentYear, svg_width, svg_height) {
         .attr("x2", xAxis(0))
         .attr("y1", function(d) { return yAxis(highest_words[d]["word"]); })
         .attr("y2", function(d) { return yAxis(highest_words[d]["word"]); })
+        .attr("stroke-width", 2)
         .style("stroke", function (d, i) { return dup_colors.get(highest_words[d]["word"]); });
 
     lines.selectAll("circle")
@@ -184,18 +199,20 @@ function draw_song_repeats_plot(year) {
 
     ////////  Axes /////////////
 
-    const biggest = buckets.reduce((res, b) => Math.max(res, b.length), 0) + 1;
-    const bucketiToPercent = (i) => ((i / buckets.length).toString()+"00").substring(0, 4);
-    const bucketiAmount = (i) => buckets[i].length / biggest;
+    const total = buckets.reduce((res, b) => res + b.length, 0);
+    const biggest = buckets.reduce((res, b) => Math.max(res, b.length), 0);
+    const bucketiToPercent = (i) => ((i + 1) / buckets.length).toFixed(2);
+    const bucketiAmount = (i) => buckets[i].length / total;
 
+    const xEnd = Math.ceil(biggest / total * 10) / 10;
     const xAxis = d3.scaleLinear()
-        .domain([0.0, 1.0])
+        .domain([0.0, Math.max(xEnd, 0.3)])
         .range([ 0, svg_width]);
 
     const yAxis = d3.scaleBand()
-        .domain(buckets.map((_, i) => bucketiToPercent(i)))
+        .domain(buckets.map((_, i) => bucketiToPercent(i)).reverse())
         .range([0, svg_height])
-        .padding(1);
+        .padding(0.1);
 
     gmain.select("#dd_axis_bottom")
         .attr("transform", "translate(0," + svg_height + ")")
@@ -209,33 +226,20 @@ function draw_song_repeats_plot(year) {
     //////// Lollipop plot ///////////////
 
     const lines = gmain.select("#dd_lines");
+    const yLoc = (d) => yAxis(bucketiToPercent(d)) + (yAxis.bandwidth()/2);
 
     lines.selectAll("line")
-        .attr("x1", function(d) { return xAxis(0); })
+        .attr("x1", function(d) { return xAxis(bucketiAmount(d)); })
+        // .attr("x1", function(d) { return xAxis(0); })
         .attr("x2", xAxis(0))
-        .attr("y1", function(d) { return yAxis(bucketiToPercent(d)); })
-        .attr("y2", function(d) { return yAxis(bucketiToPercent(d)); })
+        .attr("y1", yLoc)
+        .attr("y2", yLoc)
+        .attr("stroke-width", yAxis.bandwidth())
         .style("stroke", "white");
 
     lines.selectAll("circle")
-        .attr("cx", function(d) { return xAxis(bucketiAmount(d)); })
-        .attr("cy", function(d) { return yAxis(bucketiToPercent(d)); })
-        .attr("r", "3")
         .attr("fill-opacity", 0.0)
-        .attr("stroke-opacity", 0.0)
-        .attr("fill", "white");
-
-    lines.selectAll("line")
-        .transition()
-        .duration(300)
-        .attr("x1", function(d) { return xAxis(bucketiAmount(d)); })
-        .delay(function(d, i) { return(i * 20) });
-
-    lines.selectAll("circle")
-        .transition()
-        .duration(400)
-        .attr('fill-opacity', 1.0)
-        .delay(function(d, i) { return(i * 20) });
+        .attr("stroke-opacity", 0.0);
 }
 
 

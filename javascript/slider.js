@@ -17,9 +17,28 @@ function run_slider_callbacks(val) {
     if (data["weeks"] === undefined) return;
     const about = data["weeks"][val];
     if (about === undefined) return;
+    // Set the top texts:
     const topsong = about.songs[0];
-    document.getElementById("toptext").innerHTML = (about.week + "    [Top song: "
+    document.getElementById("date_text").innerHTML = about.week
+    document.getElementById("top_song_text").innerHTML = ("[Top song: "
         + topsong.features.title + " - " + topsong.features.artist + "]");
+    // Set event text:
+    const event_text = document.getElementById("event_text");
+    if (data["events"] === undefined) {
+        event_text.innerHTML = "";
+        return;
+    }
+    const memory_for = 15;
+    for (let i = 0; i < memory_for; i++) {
+        if (val - i < 0) continue;
+        const week = data["weeks"][val - i];
+        const ev = data["events"][week.week];
+        if (ev === undefined) continue;
+        event_text.innerHTML = ev;
+        event_text.style.opacity = (1 - (i / memory_for));
+        return;
+    }
+    event_text.innerHTML = "";
 }
 
 function update_slider_time() {
@@ -53,5 +72,9 @@ const slider = d3.select('#slider > svg')
     .attr('transform', 'translate(42,30)')
     .attr('id', "somebs")
     .call(sliderAxis);
+
+d3.json("/data/big_events.json").then(function (data) {
+    add_data("events", data);
+});
 
 window.onresize = () => run_slider_callbacks(sliderAxis.value());

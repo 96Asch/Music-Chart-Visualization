@@ -19,9 +19,19 @@
             </div>
             <div class="flex-fit showbox">
                 <div id="slider"><svg class="margin-v-center"></svg></div>
-                <p class="margin-v-center" id="toptext"></p>
+                <div class="with-flex-rows">
+                    <span class="flex-fit" id="date_text"></span>
+                    <span class="flex-big margin-v-center" id="top_song_text"></span>
+                    <span class="flex-fit" id="event_text"></span>
+                </div>
             </div>
             <div class="flex-big showbox" id="bubbles_div">
+                <div class="data-description"><p>
+                    Genre popularity. Each circle represents a genre, the
+                    size of each circle is the popularity of that genre.
+                    Genre popularity is deduced from the the presence of that
+                    genre in the top 100 songs of each week.
+                </p></div>
                 <div class="data-source"><img alt="https://spotifycharts.com/home/"
                     src="data/source_icons/source_spotify_charts.png"/></div>
                 <svg id="bubbles"></svg>
@@ -32,6 +42,8 @@
                 </button>
                 <div class="data-source"><img alt="https://www.billboard.com/"
                     src="data/source_icons/source_billboards.png"/></div>
+                <div class="data-description"><p id="repeat_description">
+                </p></div>
                 <div id="duplicates" class="fullsize">
                     <svg></svg>
                 </div>
