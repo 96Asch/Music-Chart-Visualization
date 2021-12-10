@@ -10,8 +10,8 @@ var maxYear = "", minYear = "";
 
 const switchOptions = ["Switch to repeats per song", "Switch to yearly words"];
 const optionDescriptions = [
-    `Repetition per song. Each horizontal bar shows a set of songs with a line repetition as given on the Y-axis.
-    On the X-axis we see the size of this set.`,
+    `Repetition per song. Each horizontal bar shows a set of songs with a line
+    repetition as given on the Y-axis. On the X-axis we see the size of this set.`,
     `Yearly words. Each word is counted in the top songs thoughout the year.
     The X-axis shows a word count divided by the amount of songs.`
 ];

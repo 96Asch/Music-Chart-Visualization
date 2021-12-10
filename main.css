@@ -16,12 +16,16 @@ html, body, #main_div {
     flex-direction: column;
 }
 
-.flex-small {
+.flex-tiny {
     flex: 1;
 }
 
-.flex-big {
+.flex-small {
     flex: 2;
+}
+
+.flex-big {
+    flex: 4;
 }
 
 .flex-fit {
@@ -54,7 +58,7 @@ html, body, #main_div {
     background-color: #44475a;
 }
 
-h1, h2, h3, p {
+h1, h2, h3, p, span {
     color: white;
     margin: 5px;
 }
