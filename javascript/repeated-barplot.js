@@ -1,5 +1,4 @@
 
-const margin = {top: 10, right: 30, bottom: 30, left: 40};
 const dup_colors = new Map();
 
 var highest_n = 15;

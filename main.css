@@ -116,3 +116,15 @@ g > text {
     width: 170px;
     font-size: 14px;
 }
+
+.scrollable {
+
+    overflow: auto;
+}
+
+.infobox {
+    background-color: #343746;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
