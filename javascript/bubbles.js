@@ -45,9 +45,6 @@ function draw_bubbles(week_index) {
 
     // Draw circles
     const about = data["weeks"][week_index];
-    const topsong = about.songs[0];
-    document.getElementById("toptext").innerHTML = (about.week + "  [Top song: "
-        + topsong.features.title + " - " + topsong.features.artist + "]");
     // Packing code
     var pack = d3.pack().size([totalWidth, totalHeight])
     var weekData = transformDataToGroup(about.popularity);

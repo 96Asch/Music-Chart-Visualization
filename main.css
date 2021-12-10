@@ -59,6 +59,13 @@ h1, h2, h3, p {
     margin: 5px;
 }
 
+button {
+    background-color: #383a46;
+    border: 2px solid #6272a4;
+    color: white;
+    border-radius: 4px;
+}
+
 g > text {
     stroke: none;
 }
@@ -79,8 +86,8 @@ g > text {
 
 .data-source {
     position: absolute;
-    right: 20px;
-    bottom: 20px;
+    right: 8px;
+    bottom: 4px;
 }
 
 .data-source > img {
@@ -92,8 +99,16 @@ g > text {
     position: absolute;
     display: block;
     top: -14px;
-    left: 0;
+    right: 0;
     color: white;
-    font-size: 12px;
+    font-size: 10px;
     content: "Data source:";
+}
+
+.data-description {
+    position: absolute;
+    right: 10px;
+    top: 20%;
+    width: 170px;
+    font-size: 14px;
 }
