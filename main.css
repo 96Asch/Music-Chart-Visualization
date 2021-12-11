@@ -133,7 +133,7 @@ g > text {
     transform : translate(-1000px, 0px);
 }
 
-.infoSubgenre {
+#infoSubgenre {
     background-color: #404257;
     text-transform: capitalize;
 }
