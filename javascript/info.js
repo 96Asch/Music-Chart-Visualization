@@ -20,17 +20,30 @@ function createInfoBox(index, song, subgenre) {
     
     const artist = document.createElement("p")
     artist.appendChild(document.createTextNode(song["performer"]));
-    // artist.setAttribute("class", "flex-small");
+
+    const genreContainer = document.createElement("div");
+    genreContainer.setAttribute("class", "with-flex-rows");
+    genreContainer.setAttribute("id", "infoSubgenre");
+
+    const subgenreText = document.createElement("p");
+    subgenreText.appendChild(document.createTextNode("Subgenre: "));
+    subgenreText.setAttribute("class", "subcontent flex-tiny");
 
     const genre = document.createElement("p")
     genre.appendChild(document.createTextNode(subgenre));
-    genre.setAttribute("id", "infoSubgenre");
+    genre.setAttribute("class", "subcontent flex-tiny");
+
+    genreContainer.appendChild(subgenreText);
+    genreContainer.appendChild(genre);
 
     box.appendChild(position);
     
     container.appendChild(title);
     container.appendChild(artist);
-    container.appendChild(genre);
+
+ 
+
+    container.appendChild(genreContainer);
 
     box.appendChild(container);
     box.style.transition = "transform ease-out " + (index + 1) * 150 + "ms"
@@ -57,9 +70,13 @@ function showData(genre) {
     });
     
 
+    console.log(subgenreList);
+    console.log(genreFiltered);
     const title = document.getElementById("infoTitle");
     title.removeChild(title.firstChild);
-    title.appendChild(document.createTextNode("Top songs for " + genreFiltered[0]["weekid"]));
+
+    const genreName = genre.data.name[0].toUpperCase() + genre.data.name.substring(1);
+    title.appendChild(document.createTextNode("Top songs in " + genreName +" for " + genreFiltered[0]["weekid"]));
 
     const infobox = document.getElementById("infobox");
     infobox.innerHTML = '';
@@ -69,6 +86,7 @@ function showData(genre) {
         infobox.appendChild(box);
     })
 
-
+    const topDiv = document.getElementById("show_area");
+    topDiv.scrollTop = 0;
     
 }
