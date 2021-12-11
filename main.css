@@ -117,6 +117,8 @@ g > text {
     font-size: 14px;
 }
 
+/* Info boxes */
+
 .scrollable {
 
     overflow: auto;
@@ -127,4 +129,28 @@ g > text {
     margin-top: 5px;
     margin-right: 5px;
     margin-left: 5px;
+    text-transform: capitalize;
+    transform : translate(-1000px, 0px);
 }
+
+#infoSubgenre {
+    background-color: #404257;
+    text-transform: capitalize;
+}
+
+
+.subcontent {
+    text-align: right;
+}
+
+#infobloc1
+{
+    color: white;
+    margin-top: auto;
+    margin-bottom: auto;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+
+}
+

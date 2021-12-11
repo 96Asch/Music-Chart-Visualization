@@ -118,14 +118,7 @@ function draw_bubbles(week_index) {
                 .attr("id", d => console.log(d))
         })
         .on("click", (event, genre) => {
-            console.log(genre.data.name);
             showData(genre);
-            // const genres = data["genres"];
-            // for (var j = 0; j < genres.length; j++) {
-            //     if (genres[j]["genre"] == genre.toLowerCase()) {
-            //         console.log(genres[j]["subgenre"])
-            //     }
-            // }
         });
 }
 
