@@ -99,14 +99,7 @@ function draw_bubbles(week_index) {
                 .attr("r", d => getRadius(d, sumPopularity, maxHeight))
         })
         .on("click", (event, genre) => {
-            console.log(genre.data.name);
             showData(genre);
-            // const genres = data["genres"];
-            // for (var j = 0; j < genres.length; j++) {
-            //     if (genres[j]["genre"] == genre.toLowerCase()) {
-            //         console.log(genres[j]["subgenre"])
-            //     }
-            // }
         });
 }
 
