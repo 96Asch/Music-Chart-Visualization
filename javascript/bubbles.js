@@ -33,19 +33,34 @@ function init_bubbles() {
         .attr("height", "100%")
         .attr("viewBox", "0 0 512 512")
         .attr("id", d => "circle" + d.toLowerCase().replace(/ /g,'').replace("&", ""))
-        .append("svg:image")
+
+    var image = pattern.append("svg:image")
         .attr("x", "0%")
         .attr("y", "0%")
         .attr("width", 512)
         .attr("height", 512)
         .attr("xlink:href", d => "img/" + d.toLowerCase().replace(/ /g,'').replace("&", "") + ".png")
-        
+    
+    var text = pattern.append("text")
+        .text(d => d)
+        .attr("id", "")
+        .attr("fill", "#ffffff")
+        .attr("x", "45%")
+        .attr("y", "70%")
+        .attr("alignment-baseline","middle")
+        .attr("text-anchor","middle") 
+        .attr("font-size","96")
+        .attr("font-family","Verdana")
+        .attr("paint-order", "stroke")
+        .attr("stroke", "#000000")
+
     for (key in Object.keys(colorset)) {
         let genre = Object.keys(colorset)[key];
         genre = genre.toLowerCase().replace(/ /g,'').replace("&", "")
         var circles = svg
             .append("circle")
             .attr("r", 0)
+            .style("filter", "brightness(100%)")
             .style("fill", "green")
     }
 }
@@ -90,13 +105,17 @@ function draw_bubbles(week_index) {
         .attr("cy", d => d.y)
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
-                .duration("100")
-                .attr("r", d => getRadius(d, sumPopularity, maxHeight) + 25)
+                .duration("500")
+                .style("filter", "brightness(50%)")
+                .attr("r", d => Math.max(getRadius(d, sumPopularity, maxHeight) + 25, 75))
+                .attr("id", d => console.log(d))
         })
         .on("mouseout", function(event, d) {
             d3.select(this).transition()
-                .duration("100")
+                .duration("250")
+                .style("filter", "brightness(100%)")
                 .attr("r", d => getRadius(d, sumPopularity, maxHeight))
+                .attr("id", d => console.log(d))
         })
         .on("click", (event, genre) => {
             console.log(genre.data.name);
