@@ -56,7 +56,7 @@ function draw_bubbles(week_index) {
     if (week_index < 0 || week_index > data["weeks"].length) return;
     // Resize the plot if needed
     const bubbleDiv = document.getElementById("bubbles_div");
-    const totalWidth = Math.floor(bubbleDiv.clientWidth * 0.9 / 50) * 50;
+    const totalWidth = Math.floor(bubbleDiv.clientWidth * 0.9 / 20) * 20;
     const totalHeight = (bubbleDiv.clientHeight - 60);
     if (totalWidth != d3.select("#bubbles").attr("width")) {
         d3.select("#bubbles")
