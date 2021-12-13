@@ -2,7 +2,7 @@ const margin = {top: 10, right: 30, bottom: 30, left: 40};
 
 active_info_genre="pop";
 
-function createInfoBox(index, song, subgenre, animation=false) {
+function createInfoBox(index, song, subgenre) {
     const box = document.createElement("div");
     box.setAttribute("class", "with-flex-rows infobox faded-out");
 
@@ -44,9 +44,7 @@ function createInfoBox(index, song, subgenre, animation=false) {
     container.appendChild(genreContainer);
 
     box.appendChild(container);
-    if (animation) {
-        box.style.transition = "transform ease-out " + (index + 1) * 150 + "ms"
-    }
+    box.style.transition = "transform ease-out " + (index + 1) * 80 + "ms"
 
     requestAnimationFrame(() => {
         box.style.transform = "translate(0px, 0px)";
