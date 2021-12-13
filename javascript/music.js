@@ -33,7 +33,9 @@ function promise_song_features_dict() {
                 "track": data[i].spotify_track_id,
                 "genres": genres,
                 "artist": data[i].performer,
-                "title": data[i].song
+                "title": data[i].song,
+                "speach": data[i].speechiness,
+                "instruments": data[i].instrumentalness
             };
         };
         return songFeatures;
@@ -153,7 +155,9 @@ function promise_genre_popularity() {
             }, {});
             for (song of weekdata.songs) {
                 const song_genres = song.features.genres
-                    .map((g) => genres.top_genre_of(g))
+                    .map((g) => {
+                        return genres.top_genre_of(g)
+                    })
                     .filter((v) => {
                         const found = v in base;
                         if (!found) notfoundmap[v] = (notfoundmap[v] || 0) + 1;

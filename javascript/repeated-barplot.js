@@ -11,9 +11,10 @@ const switchOptions = ["Switch to repeats per song", "Switch to yearly words"];
 const optionDescriptions = [
     `Repetition per song. Each horizontal bar shows a set of songs with a line
     repetition as given on the Y-axis. On the X-axis we see the size of this set.`,
-    `Yearly overlapping words. Each bar shows the ratio of an overlapping word 
+    `Yearly overlapping words. Each bar shows the ratio of an overlapping word
     between all songs in a year.`
 ];
+
 function switchRepeats() {
     const switchb = document.getElementById("repeat_switch");
     const innerNow = switchb.innerHTML.trim();
