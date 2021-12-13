@@ -25,7 +25,7 @@ function draw_feature_plot(week_index, force=false) {
     if (week_index < 0 || week_index > weeks_data.length) return;
 
     const featuresDiv = document.getElementById("features");
-    const totalWidth = Math.floor(featuresDiv.clientWidth * 0.95 / 20) * 20;
+    const totalWidth = Math.floor((featuresDiv.clientWidth - 80) / 20) * 20;
 
     const totalHeight = featuresDiv.clientHeight - 20;
     const feat_svg_width = totalWidth - margin.left - margin.right;
@@ -96,7 +96,7 @@ function draw_feature_plot(week_index, force=false) {
         .attr("r", "3")
         .attr("fill-opacity", 1.0)
         .attr("stroke-opacity", 0.0)
-        .attr("stroke", "white");
+        .attr("fill", "white");
 
     // points.selectAll("circle")
     //     .data(index_data)
