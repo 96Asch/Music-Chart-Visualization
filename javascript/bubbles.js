@@ -40,19 +40,6 @@ function init_bubbles() {
         .attr("width", 512)
         .attr("height", 512)
         .attr("xlink:href", d => "img/" + d.toLowerCase().replace(/ /g,'').replace("&", "") + ".png")
-    
-    var text = pattern.append("text")
-        .text(d => d)
-        .attr("id", "")
-        .attr("fill", "#ffffff")
-        .attr("x", "45%")
-        .attr("y", "70%")
-        .attr("alignment-baseline","middle")
-        .attr("text-anchor","middle") 
-        .attr("font-size","96")
-        .attr("font-family","Verdana")
-        .attr("paint-order", "stroke")
-        .attr("stroke", "#000000")
 
     for (key in Object.keys(colorset)) {
         let genre = Object.keys(colorset)[key];
@@ -106,16 +93,14 @@ function draw_bubbles(week_index) {
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
                 .duration("500")
-                .style("filter", "brightness(50%)")
+                .style("filter", "brightness(75%)")
                 .attr("r", d => Math.max(getRadius(d, sumPopularity, maxHeight) + 25, 75))
-                .attr("id", d => console.log(d))
         })
         .on("mouseout", function(event, d) {
             d3.select(this).transition()
                 .duration("250")
                 .style("filter", "brightness(100%)")
                 .attr("r", d => getRadius(d, sumPopularity, maxHeight))
-                .attr("id", d => console.log(d))
         })
         .on("click", (event, genre) => {
             showData(genre);
