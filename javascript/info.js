@@ -1,7 +1,8 @@
 const margin = {top: 10, right: 30, bottom: 30, left: 40};
 
+active_info_genre="pop";
 
-function createInfoBox(index, song, subgenre) {
+function createInfoBox(index, song, subgenre, animation=false) {
     const box = document.createElement("div");
     box.setAttribute("class", "with-flex-rows infobox faded-out");
 
@@ -11,13 +12,13 @@ function createInfoBox(index, song, subgenre) {
     position.setAttribute("id", "infobloc1");
 
     const container = document.createElement("div");
-    container.setAttribute("class", "flex-big");    
+    container.setAttribute("class", "flex-big");
     container.setAttribute("id", "infobloc2");
 
     const title = document.createElement("h3");
     title.appendChild(document.createTextNode(song["song"]));
     title.setAttribute("class", "infoheader");
-    
+
     const artist = document.createElement("p")
     artist.appendChild(document.createTextNode(song["performer"]));
 
@@ -37,16 +38,15 @@ function createInfoBox(index, song, subgenre) {
     genreContainer.appendChild(genre);
 
     box.appendChild(position);
-    
+
     container.appendChild(title);
     container.appendChild(artist);
-
- 
-
     container.appendChild(genreContainer);
 
     box.appendChild(container);
-    box.style.transition = "transform ease-out " + (index + 1) * 150 + "ms"
+    if (animation) {
+        box.style.transition = "transform ease-out " + (index + 1) * 150 + "ms"
+    }
 
     requestAnimationFrame(() => {
         box.style.transform = "translate(0px, 0px)";
@@ -55,27 +55,38 @@ function createInfoBox(index, song, subgenre) {
     return box;
 }
 
-function showData(genre) {
-    const weekData = data["weeks"][sliderAxis.value()]["songs"];
+var show_timeout = undefined;
+function showDataDelayed(week_index) {
+    if (show_timeout !== undefined) {
+        clearTimeout(show_timeout);
+        show_timeout = undefined;
+    }
+    show_timeout = setTimeout(() => showData(sliderAxis.value()), 200);
+}
 
-    const subgenreList = []
-    const genreFiltered = weekData.filter(function(d) { 
-        for (const subgenre of d["features"]["genres"]) {
-            if (genre.data.name == data["genres"].top_genre_of(subgenre)) {
+function showData(week_index) {
+    if (data["weeks"] === undefined) return;
+    if (data["genres"] === undefined) return;
+    const weekData = data["weeks"][week_index]["songs"];
+    genre = active_info_genre;
+
+    const subgenreList = [];
+    const genreFiltered = weekData.filter(function(song) {
+        for (const subgenre of song["features"]["genres"]) {
+            if (genre == data["genres"].top_genre_of(subgenre)) {
                 subgenreList.push(subgenre);
                 return true;
             }
         }
         return false;
     });
-    
 
-    console.log(subgenreList);
-    console.log(genreFiltered);
+    if (genreFiltered.length == 0) return;
+
     const title = document.getElementById("infoTitle");
     title.removeChild(title.firstChild);
 
-    const genreName = genre.data.name[0].toUpperCase() + genre.data.name.substring(1);
+    const genreName = genre[0].toUpperCase() + genre.substring(1);
     title.appendChild(document.createTextNode("Top songs in " + genreName +" for " + genreFiltered[0]["weekid"]));
 
     const infobox = document.getElementById("infobox");
@@ -88,5 +99,5 @@ function showData(genre) {
 
     const topDiv = document.getElementById("show_area");
     topDiv.scrollTop = 0;
-    
+
 }
