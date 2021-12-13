@@ -5,6 +5,7 @@ function add_data(key, newdata) {
     console.log("Updating " + key + " data");
     data[key] = newdata;
     if (key === "weeks") update_slider_time();
+    run_slider_callbacks(sliderAxis.value());
 }
 
 /////////////////// Creating the slider

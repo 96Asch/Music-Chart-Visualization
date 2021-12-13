@@ -57,7 +57,7 @@ function draw_bubbles(week_index) {
     // Resize the plot if needed
     const bubbleDiv = document.getElementById("bubbles_div");
     const totalWidth = Math.floor(bubbleDiv.clientWidth * 0.9 / 50) * 50;
-    const totalHeight = bubbleDiv.clientHeight * 0.95;
+    const totalHeight = (bubbleDiv.clientHeight - 60);
     if (totalWidth != d3.select("#bubbles").attr("width")) {
         d3.select("#bubbles")
             .attr("width", totalWidth)
@@ -103,7 +103,8 @@ function draw_bubbles(week_index) {
                 .attr("r", d => getRadius(d, sumPopularity, maxHeight))
         })
         .on("click", (event, genre) => {
-            showData(genre);
+            active_info_genre = genre.data.name;
+            showData(sliderAxis.value());
         });
 }
 
@@ -135,6 +136,7 @@ promise_genre_popularity().then(function(newdata) {
     add_data("genres", newdata["genres"]);
     add_data("weeks", newdata["weeks"]);
     add_slider_callback(draw_bubbles);
+    add_slider_callback(showDataDelayed);
 }).catch(function(err) {
     console.log(err);
 })

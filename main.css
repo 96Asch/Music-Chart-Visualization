@@ -76,14 +76,14 @@ g > text {
 
 /* The repeat switch positioning */
 
-#area_bot_left {
+.anchor {
     position: relative;
 }
 
 #repeat_switch {
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 5px;
+    top: 120px;
 }
 
 /* Data source positioning */
@@ -102,8 +102,10 @@ g > text {
 .data-source:before {
     position: absolute;
     display: block;
-    top: -14px;
+    top: -12px;
     right: 0;
+    left: 0;
+    text-align: center;
     color: white;
     font-size: 10px;
     content: "Data source:";
@@ -111,10 +113,10 @@ g > text {
 
 .data-description {
     position: absolute;
-    right: 10px;
-    top: 20%;
+    right: 0;
+    top: 0;
     width: 170px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* Info boxes */
@@ -143,8 +145,7 @@ g > text {
     text-align: right;
 }
 
-#infobloc1
-{
+#infobloc1 {
     color: white;
     margin-top: auto;
     margin-bottom: auto;
@@ -154,3 +155,6 @@ g > text {
 
 }
 
+#bubbles {
+    margin-top: 50px;
+}
