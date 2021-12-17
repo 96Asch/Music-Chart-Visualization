@@ -7,11 +7,11 @@ var current_year = "";
 var previousYear = "";
 var maxYear = "", minYear = "";
 
-const switchOptions = ["Switch to repeats per song", "Switch to yearly words"];
+const switchOptions = ["Switch to Repetition Histogram", "Switch to Similarity Plot"];
 const optionDescriptions = [
-    `Repetition per song. Each horizontal bar shows a set of songs with a line
+    `Repetition Histogram. Each horizontal bar shows a set of songs with a line
     repetition as given on the Y-axis. On the X-axis we see the size of this set.`,
-    `Yearly overlapping words. Each bar shows the ratio of an overlapping word
+    `Similarity Plot. Each bar shows the ratio of an overlapping word
     between all songs in a year.`
 ];
 
