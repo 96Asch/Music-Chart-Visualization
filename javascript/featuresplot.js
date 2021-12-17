@@ -97,13 +97,6 @@ function draw_feature_plot(week_index, force=false) {
         .attr("fill-opacity", 1.0)
         .attr("stroke-opacity", 0.0)
         .attr("fill", "white");
-
-    // points.selectAll("circle")
-    //     .data(index_data)
-    //     .transition()
-    //     .duration(60)
-    //     .attr('fill-opacity', 1.0)
-    //     .delay(function(d, i) { return(i * 5) });
 }
 
 

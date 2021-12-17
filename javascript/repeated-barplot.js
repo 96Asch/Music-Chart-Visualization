@@ -180,7 +180,6 @@ function draw_duplicates_plot(currentYear, svg_width, svg_height) {
         .transition()
         .duration(300)
         .attr("x1", function(d) { return xAxis(highest_words[d]["ratio"]); })
-        // .attr("width", function(d) { return svg_width - xAxis(d["ratio"]); })
         .delay(function(d, i) { return(i * 20) });
 
     lines.selectAll("circle")
@@ -230,7 +229,6 @@ function draw_song_repeats_plot(year) {
 
     lines.selectAll("line")
         .attr("x1", function(d) { return xAxis(bucketiAmount(d)); })
-        // .attr("x1", function(d) { return xAxis(0); })
         .attr("x2", xAxis(0))
         .attr("y1", yLoc)
         .attr("y2", yLoc)
