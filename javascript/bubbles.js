@@ -1,4 +1,4 @@
-// Set overall margins
+// Set used for initialization of the colors
 const colorset = {
     'African': "#69b3a2",
     'Central Asian': "#554fa9",
@@ -17,6 +17,7 @@ const colorset = {
     'R&B and Soul': "#37c7d7",
     'Rock': "#9b959a"
 }
+
 function init_bubbles() {
     // NOTE this function is called before the data is there.
     // Thus don't use the 'data' variable in this function!
@@ -32,14 +33,14 @@ function init_bubbles() {
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("viewBox", "0 0 512 512")
-        .attr("id", d => "circle" + d.toLowerCase().replace(/ /g,'').replace("&", ""))
+        .attr("id", d => "circle" + d.toLowerCase().replace(/ /g,'').replace("&", "")) //Reduce to lowercase no whitespace
 
     var image = pattern.append("svg:image")
         .attr("x", "0%")
         .attr("y", "0%")
         .attr("width", 512)
         .attr("height", 512)
-        .attr("xlink:href", d => "img/" + d.toLowerCase().replace(/ /g,'').replace("&", "") + ".png")
+        .attr("xlink:href", d => "img/" + d.toLowerCase().replace(/ /g,'').replace("&", "") + ".png") //Reduce to lowercase no whitespace
 
     for (key in Object.keys(colorset)) {
         let genre = Object.keys(colorset)[key];
@@ -67,7 +68,8 @@ function draw_bubbles(week_index) {
 
     // Draw circles
     const about = data["weeks"][week_index];
-    // Packing code
+
+    // Packing code for non overlapping of bubbles
     var pack = d3.pack().size([totalWidth, totalHeight])
     var weekData = transformDataToGroup(about.popularity);
     var values = weekData.map(a => a.value);
@@ -80,16 +82,19 @@ function draw_bubbles(week_index) {
         .sum(d => d.value)
         .sort((a,b) => b.value - a.value)
     var nodes = pack(root)
+
+    // Define the properties of the circles in the HTML
     var circles = d3.select("#bubbles").selectAll("circle")
         .data(nodes)
         .style("fill", function(d) {
             let name  = d.data.name;
-            name = name.toLowerCase().replace(/ /g,'').replace("&", "");
+            name = name.toLowerCase().replace(/ /g,'').replace("&", ""); // Format needed for loading of image
             return "url(#circle" + name + ")";
         })
         .attr("r", d => getRadius(d, sumPopularity, maxHeight))
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
+        // Mouse Events
         .on("mouseover", function(event, d) {
             d3.select(this).transition()
                 .duration("500")
@@ -108,18 +113,19 @@ function draw_bubbles(week_index) {
         });
 }
 
-
+// Normalizes the radius to prevent out of bounds and overlapping bubbles
 function getRadius(d, sum, maxHeight) {
     let entry = d.data
-    let radius = entry == null ? 0 : entry.value
+    let radius = entry == null ? 0 : entry.value // Prevents showing invalid entries
     radius = radius > 0 ? maxHeight * (radius / sum) : 0
     return radius;
 }
 
+// Helper function, transforms the data in correct notation for D3 Hierarchy
 function transformDataToGroup(data) {
     let result = [];
     for (var key in data) {
-        // Filter out unused genres for easier packing
+        // Filter out unused genres for easier packing of bubbles
         if (data[key] > 0) {
             let entry = {
                 "name" : key,
