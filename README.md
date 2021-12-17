@@ -3,6 +3,9 @@ Visualization of music charts using the d3 framework
 
 # Data files
 
+The main data sources are `Spotify charts` and `Billboard.com`. The data we used
+and sources for them are described more in detail below.
+
 `song_features.csv` contains information about songs like danceability and speechiness.
 `song_ranking.csv` constains songs with some data and their ranking every week.
 Since this file is on the bigger side and a lot of data is duplicate, the file size was
